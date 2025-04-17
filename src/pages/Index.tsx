@@ -12,7 +12,7 @@ const Index = () => {
             <div className="h-10 w-10 bg-awr-primary rounded-md flex items-center justify-center">
               <span className="text-white font-bold">AWR</span>
             </div>
-            <span className="ml-2 font-bold text-awr-dark">Arabian World Rides</span>
+            <span className="ml-2 font-bold text-awr-dark">AW Rostamani</span>
           </div>
           <nav className="hidden md:flex space-x-6">
             <a href="#" className="text-awr-dark hover:text-awr-primary font-medium transition-colors">Vehicles</a>
@@ -143,7 +143,7 @@ const Index = () => {
                 <div className="h-8 w-8 bg-awr-primary rounded-md flex items-center justify-center">
                   <span className="text-white font-bold text-xs">AWR</span>
                 </div>
-                <span className="ml-2 font-bold">Arabian World Rides</span>
+                <span className="ml-2 font-bold">AAW Rostamani</span>
               </div>
               <p className="text-gray-400 text-sm max-w-xs">
                 Premium automotive dealership offering luxury vehicles, exceptional service, and unmatched customer experience.
@@ -180,7 +180,7 @@ const Index = () => {
           </div>
           <div className="border-t border-gray-800 mt-8 pt-6 text-sm text-gray-500">
               <div className="flex justify-between items-center">
-                <p>© {new Date().getFullYear()} Arabian World Rides. All rights reserved.</p>
+                <p>© {new Date().getFullYear()} AW Rostamani. All rights reserved.</p>
                 <a href="/flow" className="text-awr-primary hover:text-white transition-colors">View Chatbot Architecture</a>
               </div>
           </div>
@@ -188,7 +188,7 @@ const Index = () => {
       </footer>
       
       {/* Chatbot Widgets */}
-      <ChatWindow />
+      {/* <ChatWindow /> */}
       <SidePanelChatbot />
     </div>
   );
