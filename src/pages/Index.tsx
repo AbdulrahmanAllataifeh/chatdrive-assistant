@@ -1,6 +1,6 @@
-
 import React from "react";
 import ChatWindow from "@/components/chatbot/ChatWindow";
+import { SidePanelChatbot } from "@/components/chatbot/SidePanelChatbot";
 
 const Index = () => {
   return (
@@ -187,8 +187,9 @@ const Index = () => {
         </div>
       </footer>
       
-      {/* Chatbot Widget */}
+      {/* Chatbot Widgets */}
       <ChatWindow />
+      <SidePanelChatbot />
     </div>
   );
 };
