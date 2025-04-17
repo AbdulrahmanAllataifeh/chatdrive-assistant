@@ -12,16 +12,17 @@ interface Message {
   content: string;
 }
 
-const TYPING_SPEED = 50; // ms per character
-const INITIAL_DELAY = 500; // ms before starting to type
+const TYPING_SPEED = 20; // ms per character
+const INITIAL_DELAY = 200;
 
 export function SidePanelChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentScenario, setCurrentScenario] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [userInput, setUserInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -49,24 +50,34 @@ export function SidePanelChatbot() {
     setIsTyping(false);
   };
 
-  const handleScenarioSelect = (scenarioId: string) => {
+  const handleUserSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userInput.trim() || isTyping) return;
+
+    const scenario = scenarios[currentScenario!];
+    const newUserMessage = userInput.trim();
+    setMessages(prev => [...prev, { role: "user", content: newUserMessage }]);
+    setUserInput("");
+
+    if (currentStep < scenario.steps.length) {
+      const assistantResponse = scenario.steps[currentStep].assistant;
+      setMessages(prev => [...prev, { role: "assistant", content: "" }]);
+      await simulateTyping(assistantResponse);
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
+  const handleScenarioSelect = async (scenarioId: string) => {
     setCurrentScenario(scenarioId);
     setMessages([]);
     setCurrentStep(0);
     const scenario = scenarios[scenarioId];
     if (scenario) {
-      setMessages([{ role: "user", content: scenario.steps[0].user }]);
+      setMessages([
+        { role: "user", content: scenario.steps[0].user },
+        { role: "assistant", content: "" }
+      ]);
       simulateTyping(scenario.steps[0].assistant);
-    }
-  };
-
-  const handleNextStep = () => {
-    const scenario = scenarios[currentScenario!];
-    if (scenario && currentStep + 1 < scenario.steps.length) {
-      const nextStep = currentStep + 1;
-      setCurrentStep(nextStep);
-      setMessages(prev => [...prev, { role: "user", content: scenario.steps[nextStep].user }]);
-      simulateTyping(scenario.steps[nextStep].assistant);
     }
   };
 
@@ -76,7 +87,7 @@ export function SidePanelChatbot() {
         <Button
           variant="outline"
           size="icon"
-          className="fixed left-4 bottom-4 h-12 w-12 rounded-full bg-white shadow-lg hover:bg-awr-accent hover:text-white"
+          className="fixed left-4 bottom-20 h-12 w-12 rounded-full bg-white shadow-lg hover:bg-awr-accent hover:text-white"
         >
           <MessageCircle className="h-6 w-6" />
         </Button>
@@ -127,31 +138,31 @@ export function SidePanelChatbot() {
                     </div>
                   </motion.div>
                 ))}
-                {isTyping && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center space-x-2 text-gray-500"
-                  >
-                    <span className="animate-bounce">●</span>
-                    <span className="animate-bounce delay-100">●</span>
-                    <span className="animate-bounce delay-200">●</span>
-                  </motion.div>
-                )}
               </AnimatePresence>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {currentScenario && !isTyping && currentStep + 1 < scenarios[currentScenario].steps.length && (
-            <div className="border-t p-4">
-              <Button 
-                onClick={handleNextStep}
-                className="w-full bg-awr-accent hover:bg-awr-accent-bright text-white"
-              >
-                Continue Conversation
-              </Button>
-            </div>
+          {currentScenario && (
+            <form onSubmit={handleUserSubmit} className="border-t p-4">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  placeholder="Type your message..."
+                  className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-awr-accent"
+                  disabled={isTyping}
+                />
+                <Button 
+                  type="submit" 
+                  disabled={isTyping}
+                  className="bg-awr-accent hover:bg-awr-accent-bright text-white"
+                >
+                  Send
+                </Button>
+              </div>
+            </form>
           )}
         </div>
       </SheetContent>
