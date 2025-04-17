@@ -29,7 +29,11 @@ export default {
 					secondary: '#403D39',
 					tertiary: '#CCC5B9',
 					light: '#FFFCF2',
-					accent: '#EB5E28',
+					accent: {
+						DEFAULT: '#EB5E28',
+						soft: '#FEC6A1',
+						bright: '#F97316'
+					},
 					neutral: '#8E9196',
 					softGray: '#CCC5B9',
 					dark: '#252422',
